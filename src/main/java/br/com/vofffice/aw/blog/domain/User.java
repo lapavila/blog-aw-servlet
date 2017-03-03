@@ -12,6 +12,23 @@ public class User {
 	private Date updatedAt;
 	
 	public User(){}
+	
+	public User(Long id) {
+		this.id = id;
+	}
+
+	public User(String fullName, String username, String password) {
+		this.fullName = fullName;
+		this.username = username;
+		this.password = password;
+	}
+
+	public User(Long id, String fullName, String username, String password) {
+		this.id = id;
+		this.fullName = fullName;
+		this.username = username;
+		this.password = password;
+	}
 
 	public Long getId() {
 		return id;

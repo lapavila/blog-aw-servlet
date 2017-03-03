@@ -2,6 +2,7 @@ package br.com.vofffice.aw.blog.servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import br.com.vofffice.aw.blog.dao.UserDao;
 import br.com.vofffice.aw.blog.dao.mysql.UserDaoMysql;
 import br.com.vofffice.aw.blog.domain.User;
+import br.com.vofffice.aw.blog.service.UsuarioService;
 
 /**
  * Servlet implementation class UsuarioServlet
@@ -50,35 +52,34 @@ public class UsuarioServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String acao = request.getPathInfo();
 		
-		UserDao dao = new UserDaoMysql();
-		
+		UsuarioService service = new UsuarioService();
+		Long id = null;
 		String strId = request.getParameter("id");
-		Long id = Long.valueOf(strId);
-		User user = new User();
+		if (strId != null) {
+			id = Long.valueOf(strId);
+		}
+		
 		String destino = null;
-		List<User> users = new ArrayList<>();
 		
 		switch(acao) {
 			case "/delete" :
-				user.setId(id);
-				dao.delete(user);
-				
-				users = dao.findAll();
-				request.setAttribute("users", users);
-				
+				service.delete(id);
+				request.setAttribute("users", service.findAll());
 				destino = "/userPages/list.jsp";
 				break;
 			case "/edit" :
-
 				destino = "/userPages/form.jsp";
 				break;
 				
 			case "/save" :
-				//salvar o usuario
-				//recupera os parametros do form
+				String fullName = request.getParameter("fullName");
+				String username = request.getParameter("username");
+				String password = request.getParameter("password");
 				
-				users = dao.findAll();
-				request.setAttribute("users", users);
+				User user = new User(id, fullName, username, password);
+				service.save(user);
+
+				request.setAttribute("users", service.findAll());
 				
 				destino = "/userPages/list.jsp";
 				break;
